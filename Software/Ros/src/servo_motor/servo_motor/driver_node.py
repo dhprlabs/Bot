@@ -4,9 +4,9 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32MultiArray
 
-# Import your custom module
-from st3215 import ST3215
-    
+from .st3215 import ST3215
+
+
 class DriverNode(Node):
     def __init__(self):
         super().__init__('driver_node')
@@ -15,20 +15,19 @@ class DriverNode(Node):
         self.declare_parameter('port', '/dev/ttyACM0')
         self.declare_parameter('left_motor_id', 1)
         self.declare_parameter('right_motor_id', 2)
-        self.declare_parameter('max_speed_scale', 1500) # Mapping factor for incoming velocity commands
+        self.declare_parameter('max_speed_scale', 1500) 
         
         port = self.get_parameter('port').get_parameter_value().string_value
         self.left_id = self.get_parameter('left_motor_id').get_parameter_value().integer_value
         self.right_id = self.get_parameter('right_motor_id').get_parameter_value().integer_value
         self.speed_scale = self.get_parameter('max_speed_scale').get_parameter_value().integer_value
         
-        self.get_logger().info(f"Initializing ST3215 driver on port: {port}")
+        self.get_logger().info(f"[INIT]: servo driver on port: {port}")
         
         try:
-            # Initialize ST3215 serial handler
             self.servo = ST3215(port)
         except Exception as e:
-            self.get_logger().error(f"Failed to open port {port}: {str(e)}")
+            self.get_logger().error(f"[FAILED]: to open port {port}: {str(e)}")
             raise e
 
         # Ensure motors are in continuous speed mode (Mode 1)
@@ -41,11 +40,11 @@ class DriverNode(Node):
         
         # Subscribers & Publishers
         self.cmd_vel_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_vel_callback, 10)
-        self.telemetry_pub = self.create_publisher(Float32MultiArray, '~/telemetry', 10)
+        self.telemetry_pub = self.create_publisher(Float32MultiArray, '/telemetry', 10)
         
         # Status Telemetry Loop (Runs at 1 Hz to avoid overloading serial bus)
         self.telemetry_timer = self.create_timer(1.0, self.publish_telemetry)
-        self.get_logger().info("ST3215 ROS 2 Driver operational. Listening to /cmd_vel")
+        self.get_logger().info("[LISTENING]: /cmd_vel")
 
     def cmd_vel_callback(self, msg: Twist):
         # We only look at linear.x for forward/backward motions
@@ -69,13 +68,21 @@ class DriverNode(Node):
         c1 = self.servo.ReadCurrent(self.left_id)
         t1 = self.servo.ReadTemperature(self.left_id)
         
+        v2 = self.servo.ReadVoltage(self.right_id)
+        c2 = self.servo.ReadCurrent(self.right_id)
+        t2 = self.servo.ReadTemperature(self.right_id)
+
         # Fallbacks for empty packets or read drops
         v1 = v1 if v1 is not None else 0.0
         c1 = c1 if c1 is not None else 0.0
         t1 = float(t1) if t1 is not None else 0.0
         
+        v2 = v2 if v2 is not None else 0.0
+        c2 = c2 if c2 is not None else 0.0
+        t2 = float(t2) if t2 is not None else 0.0
+
         msg = Float32MultiArray()
-        msg.data = [v1, c1, t1]
+        msg.data = [v1, c1, t1, v2, c2, t2]
         self.telemetry_pub.publish(msg)
 
     def destroy_node(self):
