@@ -7,12 +7,11 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Comm
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
+
 def generate_launch_description():
-
-    pkg_bme_gazebo_basics = get_package_share_directory('bme_gazebo_basics')
-
-    gazebo_models_path, ignore_last_dir = os.path.split(pkg_bme_gazebo_basics)
-    os.environ["GZ_SIM_RESOURCE_PATH"] += os.pathsep + gazebo_models_path
+    pkg_virtual_lab = get_package_share_directory('virtual_lab')
+    gazebo_models_path, ignore_last_dir = os.path.split(pkg_virtual_lab)
+    os.environ["IGN_GZ_SIM_RESOURCE_PATH"] += os.pathsep + gazebo_models_path
 
     rviz_launch_arg = DeclareLaunchArgument(
         'rviz', default_value='true',
@@ -31,14 +30,14 @@ def generate_launch_description():
 
     # Define the path to your URDF or Xacro file
     urdf_file_path = PathJoinSubstitution([
-        pkg_bme_gazebo_basics,  # Replace with your package name
+        pkg_virtual_lab,  # Replace with your package name
         "urdf",
         LaunchConfiguration('model')  # Replace with your URDF or Xacro file
     ])
 
     world_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_bme_gazebo_basics, 'launch', 'world.launch.py'),
+            os.path.join(pkg_virtual_lab, 'launch', 'world.launch.py'),
         ),
         launch_arguments={
         'world': LaunchConfiguration('world'),
@@ -49,7 +48,7 @@ def generate_launch_description():
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', os.path.join(pkg_bme_gazebo_basics, 'rviz', 'rviz.rviz')],
+        arguments=['-d', os.path.join(pkg_virtual_lab, 'rviz', 'rviz.rviz')],
         condition=IfCondition(LaunchConfiguration('rviz')),
         parameters=[
             {'use_sim_time': True},

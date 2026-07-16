@@ -52,9 +52,6 @@
       <ambient>1 1 1 1</ambient>
       <background>1 1 1 1</background>
       <shadows>1</shadows>
-      <sky>
-        <sunset>20</sunset>
-      </sky>
     </scene>
 
     <gui fullscreen='0'>
