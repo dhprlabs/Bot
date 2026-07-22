@@ -2,6 +2,7 @@ import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
+from launch.launch_description_sources import AnyLaunchDescriptionSource
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch_ros.actions import Node
@@ -10,9 +11,10 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     pkg_virtual_lab = get_package_share_directory('virtual_lab')
+    
     gazebo_models_path, ignore_last_dir = os.path.split(pkg_virtual_lab)
-    os.environ["IGN_GZ_SIM_RESOURCE_PATH"] += os.pathsep + gazebo_models_path
-
+    os.environ["IGN_GAZEBO_RESOURCE_PATH"] += os.pathsep + gazebo_models_path
+    
     rviz_launch_arg = DeclareLaunchArgument(
         'rviz', default_value='true',
         description='Open RViz.'
@@ -24,7 +26,7 @@ def generate_launch_description():
     )
 
     model_arg = DeclareLaunchArgument(
-        'model', default_value='mogi_bot.urdf',
+        'model', default_value='slam_bot.urdf',
         description='Name of the URDF description to load'
     )
 
@@ -36,8 +38,8 @@ def generate_launch_description():
     ])
 
     world_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_virtual_lab, 'launch', 'world.launch.py'),
+        AnyLaunchDescriptionSource(
+            os.path.join(pkg_virtual_lab, 'launch', 'world.launch.xml'),
         ),
         launch_arguments={
         'world': LaunchConfiguration('world'),
@@ -48,7 +50,7 @@ def generate_launch_description():
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', os.path.join(pkg_virtual_lab, 'rviz', 'rviz.rviz')],
+        arguments=['-d', os.path.join(pkg_virtual_lab, 'rviz', 'urdf.rviz')],
         condition=IfCondition(LaunchConfiguration('rviz')),
         parameters=[
             {'use_sim_time': True},
@@ -62,7 +64,7 @@ def generate_launch_description():
         arguments=[
             "-name", "my_robot",
             "-topic", "robot_description",
-            "-x", "0.0", "-y", "0.0", "-z", "0.5", "-Y", "0.0"  # Initial spawn position
+            "-x", "-0.68", "-y", "1.40", "-z", "0.13", "-Y", "-1.57"  # Initial spawn position
         ],
         output="screen",
         parameters=[
@@ -85,27 +87,20 @@ def generate_launch_description():
         ]
     )
 
-    # Node to bridge messages like /cmd_vel and /odom
     gz_bridge_node = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
-        arguments=[
-            "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
-            "/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
-            "/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry",
-            "/joint_states@sensor_msgs/msg/JointState@gz.msgs.Model",
-            "/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V"
+        parameters=[
+            {
+                "config_file": os.path.join(
+                    pkg_virtual_lab,
+                    "config",
+                    "gz_bridge.yaml",
+                ),
+                "use_sim_time": True,
+            }
         ],
         output="screen",
-        parameters=[
-            {'use_sim_time': True},
-        ]
-    )
-
-    trajectory_node = Node(
-        package='mogi_trajectory_server',
-        executable='mogi_trajectory_server',
-        name='mogi_trajectory_server',
     )
 
     launchDescriptionObject = LaunchDescription()
@@ -118,6 +113,5 @@ def generate_launch_description():
     launchDescriptionObject.add_action(spawn_urdf_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
     launchDescriptionObject.add_action(gz_bridge_node)
-    launchDescriptionObject.add_action(trajectory_node)
     
     return launchDescriptionObject

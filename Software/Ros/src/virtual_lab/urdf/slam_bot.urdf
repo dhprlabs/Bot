@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<robot name="slam_bot">
-  <link name="base_link">
+<robot name="virtual_lab" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+  <xacro:include filename="$(find virtual_lab)/urdf/slam_bot.gazebo" />
+
+  <link name="base_footprint"></link>
+        
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+  </joint>
+
+  <link
+    name="base_link">
     <inertial>
       <origin
-        xyz="0.63263 0.85695 1.329"
+        xyz="-0.0018591 -0.00023636 0.052118"
         rpy="0 0 0" />
       <mass
         value="1.2391" />
       <inertia
-        ixx="0.0041453"
-        ixy="-2.6591E-06"
-        ixz="9.0036E-06"
-        iyy="0.0062191"
-        iyz="4.9674E-05"
-        izz="0.0027737" />
+        ixx="0.0027737"
+        ixy="9.0036E-06"
+        ixz="4.9674E-05"
+        iyy="0.0041453"
+        iyz="-2.6591E-06"
+        izz="0.0062191" />
     </inertial>
     <visual>
       <origin
@@ -43,16 +55,16 @@
     name="fr_left_wheel_link">
     <inertial>
       <origin
-        xyz="-4.5465E-09 -2.2877E-10 -0.011873"
+        xyz="-6.4206E-10 -4.5067E-09 -0.011873"
         rpy="0 0 0" />
       <mass
         value="0.021403" />
       <inertia
-        ixx="8.6276E-06"
-        ixy="1.8968E-13"
-        ixz="-7.5832E-17"
-        iyy="8.6271E-06"
-        iyz="1.5767E-14"
+        ixx="8.6271E-06"
+        ixy="8.8086E-11"
+        ixz="-1.5492E-14"
+        iyy="8.6276E-06"
+        iyz="2.931E-15"
         izz="1.4513E-05" />
     </inertial>
     <visual>
@@ -83,29 +95,35 @@
     name="fr_left_wheel_joint"
     type="continuous">
     <origin
-      xyz="0.73816 -1.3964 0.82211"
-      rpy="-1.5708 1.379 -1.5708" />
+      xyz="0.065506 0.1053 0.017279"
+      rpy="-1.5708 0 0" />
     <parent
       link="base_link" />
     <child
       link="fr_left_wheel_link" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 0 -1" />
+    <limit
+      effort="2.94"
+      velocity="4.712" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
   </joint>
   <link
     name="fr_right_wheel_link">
     <inertial>
       <origin
-        xyz="-4.4841E-09 -1.7372E-10 -0.011873"
+        xyz="-1.0253E-09 -4.3688E-09 0.011873"
         rpy="0 0 0" />
       <mass
         value="0.021403" />
       <inertia
-        ixx="8.6276E-06"
-        ixy="1.9135E-13"
-        ixz="-7.3012E-15"
-        iyy="8.6271E-06"
-        iyz="1.4288E-14"
+        ixx="8.6271E-06"
+        ixy="8.8432E-11"
+        ixz="-1.2635E-14"
+        iyy="8.6276E-06"
+        iyz="9.8909E-15"
         izz="1.4513E-05" />
     </inertial>
     <visual>
@@ -136,29 +154,35 @@
     name="fr_right_wheel_joint"
     type="continuous">
     <origin
-      xyz="0.52756 -1.3964 0.82211"
-      rpy="1.5708 1.379 -1.5708" />
+      xyz="0.065492 -0.1053 0.017276"
+      rpy="-1.5708 0 0" />
     <parent
       link="base_link" />
     <child
       link="fr_right_wheel_link" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 0 1" />
+    <limit
+      effort="2.94"
+      velocity="4.712" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
   </joint>
   <link
     name="bk_left_wheel_link">
     <inertial>
       <origin
-        xyz="-4.4841E-09 -1.7372E-10 -0.011873"
+        xyz="1.0253E-09 -4.3688E-09 -0.011873"
         rpy="0 0 0" />
       <mass
         value="0.021403" />
       <inertia
-        ixx="8.6276E-06"
-        ixy="1.9134E-13"
-        ixz="-7.3014E-15"
-        iyy="8.6271E-06"
-        iyz="1.4288E-14"
+        ixx="8.6271E-06"
+        ixy="-8.8432E-11"
+        ixz="-1.2635E-14"
+        iyy="8.6276E-06"
+        iyz="-9.8911E-15"
         izz="1.4513E-05" />
     </inertial>
     <visual>
@@ -189,29 +213,35 @@
     name="bk_left_wheel_joint"
     type="continuous">
     <origin
-      xyz="0.73816 -1.2653 0.82211"
-      rpy="1.5708 1.379 1.5708" />
+      xyz="-0.065591 0.1053 0.017276"
+      rpy="-1.5708 0 0" />
     <parent
       link="base_link" />
     <child
       link="bk_left_wheel_link" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 0 -1" />
+    <limit
+      effort="2.94"
+      velocity="4.712" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
   </joint>
   <link
     name="bk_right_wheel_link">
     <inertial>
       <origin
-        xyz="-4.5465E-09 -2.2877E-10 -0.011873"
+        xyz="6.4206E-10 -4.5067E-09 0.011873"
         rpy="0 0 0" />
       <mass
         value="0.021403" />
       <inertia
-        ixx="8.6276E-06"
-        ixy="1.8968E-13"
-        ixz="-7.5287E-17"
-        iyy="8.6271E-06"
-        iyz="1.5767E-14"
+        ixx="8.6271E-06"
+        ixy="-8.8086E-11"
+        ixz="-1.5492E-14"
+        iyy="8.6276E-06"
+        iyz="-2.9315E-15"
         izz="1.4513E-05" />
     </inertial>
     <visual>
@@ -242,30 +272,36 @@
     name="bk_right_wheel_joint"
     type="continuous">
     <origin
-      xyz="0.52756 -1.2653 0.82211"
-      rpy="-1.5708 1.379 1.5708" />
+      xyz="-0.065606 -0.1053 0.017279"
+      rpy="-1.5708 0 0" />
     <parent
       link="base_link" />
     <child
       link="bk_right_wheel_link" />
     <axis
-      xyz="0 1 0" />
+      xyz="0 0 1" />
+    <limit
+      effort="2.94"
+      velocity="4.712" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
   </joint>
   <link
     name="lidar_link">
     <inertial>
       <origin
-        xyz="4.4433E-08 0.018462 -7.7482E-05"
+        xyz="-7.7482E-05 4.4492E-08 0.018462"
         rpy="0 0 0" />
       <mass
         value="0.74835" />
       <inertia
-        ixx="0.00025778"
-        ixy="9.5139E-11"
-        ixz="-6.2173E-10"
-        iyy="0.00031753"
-        iyz="-7.6812E-07"
-        izz="0.00025587" />
+        ixx="0.00025587"
+        ixy="-6.21E-10"
+        ixz="-7.6812E-07"
+        iyy="0.00025778"
+        iyz="9.5637E-11"
+        izz="0.00031753" />
     </inertial>
     <visual>
       <origin
@@ -295,8 +331,8 @@
     name="lidar_joint"
     type="fixed">
     <origin
-      xyz="0.63307 -1.3458 0.93783"
-      rpy="1.5708 0 0" />
+      xyz="0.01495 0.00020855 0.133"
+      rpy="0 0 0" />
     <parent
       link="base_link" />
     <child
@@ -308,17 +344,17 @@
     name="camera_link">
     <inertial>
       <origin
-        xyz="1.1396E-05 -0.00013598 0.011556"
+        xyz="0.011556 1.1396E-05 -0.00013598"
         rpy="0 0 0" />
       <mass
         value="0.10791" />
       <inertia
-        ixx="7.7102E-06"
-        ixy="-2.5269E-10"
-        ixz="-1.7934E-08"
-        iyy="7.0257E-05"
-        iyz="4.9224E-08"
-        izz="7.1255E-05" />
+        ixx="7.1255E-05"
+        ixy="-1.7934E-08"
+        ixz="4.9224E-08"
+        iyy="7.7102E-06"
+        iyz="-2.5269E-10"
+        izz="7.0257E-05" />
     </inertial>
     <visual>
       <origin
@@ -348,8 +384,8 @@
     name="camera_joint"
     type="fixed">
     <origin
-      xyz="0.63286 -1.3938 0.89301"
-      rpy="1.1384 0 0" />
+      xyz="0.06293 0 0.088176"
+      rpy="0 -0.43241 0" />
     <parent
       link="base_link" />
     <child
