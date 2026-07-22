@@ -112,6 +112,18 @@ Robot model, TF tree and LiDAR scans are successfully visualized in RViz2.
 
 ---
 
+## ✅ RGB Camera Intergration
+
+Successfully integrated rgb camera on the slam bot
+ 
+<p align="center">
+
+![RGB Camera](Images/rgb_camera.png)
+
+</p>
+
+---
+
 # Development Roadmap
 
 ## Phase 1 — Robot Description
@@ -120,6 +132,7 @@ Robot model, TF tree and LiDAR scans are successfully visualized in RViz2.
 - [x] Gazebo Simulation
 - [x] RViz Visualization
 - [x] LiDAR Integration
+- [x] RGB Camera Integration
 - [ ] IMU Integration
 - [ ] Differential Drive Controller
 
