@@ -192,11 +192,11 @@ Robot model, TF tree and LiDAR scans are successfully visualized in RViz2.
 
 # Authors
 
-**Amrit Singh**
-**Yash Dilkhush**
-**Devanshu Mangal**
-**Dhairya Prajapati**
-**Vansh Sadadiwala**
+- **Amrit Singh**
+- **Yash Dilkhush**
+- **Devanshu Mangal**
+- **Dhairya Prajapati**
+- **Vansh Sadadiwala**
 
 ---
 
