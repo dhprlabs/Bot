@@ -67,7 +67,7 @@
         <collision name='collision'>
           <geometry>
             <mesh>
-              <uri>file://virtual_lab.obj</uri>
+              <uri>model://virtual_lab/meshes/virtual_lab.obj</uri>
               <scale>0.1 0.1 0.1</scale>
             </mesh>
           </geometry>
@@ -75,7 +75,7 @@
         <visual name='visual'>
           <geometry>
             <mesh>
-              <uri>file://virtual_lab.obj</uri>
+              <uri>model://virtual_lab/meshes/virtual_lab.obj</uri>
               <scale>0.1 0.1 0.1</scale>
             </mesh>
           </geometry>

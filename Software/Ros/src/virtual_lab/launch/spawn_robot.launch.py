@@ -14,7 +14,7 @@ def generate_launch_description():
     
     gazebo_models_path, ignore_last_dir = os.path.split(pkg_virtual_lab)
     os.environ["IGN_GAZEBO_RESOURCE_PATH"] += os.pathsep + gazebo_models_path
-    
+
     rviz_launch_arg = DeclareLaunchArgument(
         'rviz', default_value='true',
         description='Open RViz.'
@@ -103,6 +103,30 @@ def generate_launch_description():
         output="screen",
     )
 
+    gz_image_bridge_node = Node(
+        package="ros_gz_image",
+        executable="image_bridge",
+        arguments=[
+            "/camera/image",
+        ],
+        output="screen",
+        parameters=[
+            {'use_sim_time': True,
+             'camera.image.compressed.jpeg_quality': 75},
+        ],
+    )
+
+    relay_camera_info_node = Node(
+        package='topic_tools',
+        executable='relay',
+        name='relay_camera_info',
+        output='screen',
+        arguments=['camera/camera_info', 'camera/image/camera_info'],
+        parameters=[
+            {'use_sim_time': True},
+        ]
+    )
+
     launchDescriptionObject = LaunchDescription()
 
     launchDescriptionObject.add_action(rviz_launch_arg)
@@ -113,5 +137,7 @@ def generate_launch_description():
     launchDescriptionObject.add_action(spawn_urdf_node)
     launchDescriptionObject.add_action(robot_state_publisher_node)
     launchDescriptionObject.add_action(gz_bridge_node)
+    launchDescriptionObject.add_action(gz_image_bridge_node)
+    launchDescriptionObject.add_action(relay_camera_info_node)
     
     return launchDescriptionObject
