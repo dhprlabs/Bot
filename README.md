@@ -133,7 +133,7 @@ Successfully integrated rgb camera on the slam bot
 - [x] RViz Visualization
 - [x] LiDAR Integration
 - [x] RGB Camera Integration
-- [ ] IMU Integration
+- [x] IMU Integration
 - [ ] Differential Drive Controller
 
 ---
